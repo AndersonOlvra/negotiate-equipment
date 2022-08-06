@@ -1,14 +1,65 @@
-<p style="color: green"><%= notice %></p>
+<section class="section">
+  <div class="section-header d-mobile-none">
+    <h1>Vacations</h1>
+    <div class="section-header-breadcrumb">
+      <div class="breadcrumb-item"><%= link_to 'Dashboard', root_path %></div>
+      <div class="breadcrumb-item">List of Vacations</div>
+    </div>
+  </div>
 
-<h1>Vacations</h1>
+  <div class="section-body">
+    <div class="card">
+      <div class="card-header">
+        <h4>List of Vacations</h4>
+        <div class="card-header-action">
+          <%= link_to icon('fas fa-plus', 'New Vacation'), new_vacation_path, class: 'btn btn-icon icon-left btn-primary' %>
+          <%= render 'shared/card_dropdown' do %>
+            <%= link_to icon('fas fa-download', 'Export Data'), vacations_path(format: :csv, q: request.params[:q]), class: 'dropdown-item has-icon' %>
+            <%= link_to icon('fas fa-print', 'Print Page'), 'javascript:window.print()', class: 'dropdown-item has-icon' %>
+          <% end %>
+        </div>
+      </div>
+      <div class="card-body" data-controller="infinite-page">
+        <!--
+        <#= search_form_for @search, remote: true, data: { controller: 'turbolinks-form' }, html: { class: 'form-row' } do |f| #>
+          <div class="form-group col-sm-10">
+            <#= f.text_field :name_cont, class: 'form-control m-input m-input--solid', placeholder: 'Name' #>
+          </div>
+          <div class="form-group col-sm-2 text-right">
+            <#= f.button icon('fas fa-search', 'Search'), name: nil, class: 'btn btn-icon icon-left btn-primary' #>
+          </div>
+        <# end #>
+        -->
+        <div class="table-responsive">
+          <table class="table table-striped table-md">
+            <thead>
+              <tr>
+                <th><%= sort_link_turbo(@search, :start_date) %></th>
+                <th><%= sort_link_turbo(@search, :end_date) %></th>
+                <th><%= sort_link_turbo(@search, :user) %></th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody data-target="infinite-page.container">
+              <% @vacations.each do |vacation| %>
+                <tr data-target="infinite-page.item">
+                  <td><%= vacation.start_date.strftime("%d/%m/%Y") %></td>
+                  <td><%= vacation.end_date.strftime("%d/%m/%Y") %></td>
+                  <td><%= vacation.user %></td>
+                  <td>
+                    <%= link_to icon('fas fa-eye'), vacation, title: 'Show it', class: 'btn btn-icon btn-sm btn-info mr-1' %>
+                    <%= link_to icon('fas fa-edit'), edit_vacation_path(vacation), title: 'Edit it', class: 'btn btn-icon btn-sm btn-warning mr-1' %>
+                    <%= link_to icon('fas fa-trash'), vacation, title: 'Destroy it', class: 'btn btn-icon btn-sm btn-danger', method: :delete, data: { confirm: 'Are you sure?', remote: true } %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+          <%= link_to 'Next page', vacations_path(page: @page.next_number, q: request.params[:q]), data: { target: 'infinite-page.more' } unless @page.last? %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-<div id="vacations">
-  <% @vacations.each do |vacation| %>
-    <%= render vacation %>
-    <p>
-      <%= link_to "Show this vacation", vacation %>
-    </p>
-  <% end %>
-</div>
-
-<%= link_to "New vacation", new_vacation_path %>
+<% content_for(:page_title, 'List of Vacations') %>

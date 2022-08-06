@@ -1,14 +1,69 @@
-<p style="color: green"><%= notice %></p>
+<section class="section">
+  <div class="section-header d-mobile-none">
+    <h1>Users</h1>
+    <div class="section-header-breadcrumb">
+      <div class="breadcrumb-item"><%= link_to 'Dashboard', root_path %></div>
+      <div class="breadcrumb-item">List of Users</div>
+    </div>
+  </div>
 
-<h1>Users</h1>
+  <div class="section-body">
+    <div class="card">
+      <div class="card-header">
+        <h4>List of Users</h4>
+        <div class="card-header-action">
+          <%= link_to icon('fas fa-plus', 'New User'), new_user_path, class: 'btn btn-icon icon-left btn-primary' %>
+          <%= render 'shared/card_dropdown' do %>
+            <%= link_to icon('fas fa-download', 'Export Data'), users_path(format: :csv, q: request.params[:q]), class: 'dropdown-item has-icon' %>
+            <%= link_to icon('fas fa-print', 'Print Page'), 'javascript:window.print()', class: 'dropdown-item has-icon' %>
+          <% end %>
+        </div>
+      </div>
+      <div class="card-body" data-controller="infinite-page">
+        <!--
+        <#= search_form_for @search, remote: true, data: { controller: 'turbolinks-form' }, html: { class: 'form-row' } do |f| #>
+          <div class="form-group col-sm-10">
+            <#= f.text_field :name_cont, class: 'form-control m-input m-input--solid', placeholder: 'Name' #>
+          </div>
+          <div class="form-group col-sm-2 text-right">
+            <#= f.button icon('fas fa-search', 'Search'), name: nil, class: 'btn btn-icon icon-left btn-primary' #>
+          </div>
+        <# end #>
+        -->
+        <div class="table-responsive">
+          <table class="table table-striped table-md">
+            <thead>
+              <tr>
+                <th><%= sort_link_turbo(@search, :name) %></th>
+                <th><%= sort_link_turbo(@search, :nickname) %></th>
+                <th><%= sort_link_turbo(@search, :email) %></th>
+                <th><%= sort_link_turbo(@search, :birthdate) %></th>
+                <th><%= sort_link_turbo(@search, :country) %></th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody data-target="infinite-page.container">
+              <% @users.each do |user| %>
+                <tr data-target="infinite-page.item">
+                  <td><%= user.name %></td>
+                  <td><%= user.nickname %></td>
+                  <td><%= user.email %></td>
+                  <td><%= user.birthdate.strftime("%d/%m/%Y") %></td>
+                  <td><%= user.country %></td>
+                  <td>
+                    <%= link_to icon('fas fa-eye'), user, title: 'Show it', class: 'btn btn-icon btn-sm btn-info mr-1' %>
+                    <%= link_to icon('fas fa-edit'), edit_user_path(user), title: 'Edit it', class: 'btn btn-icon btn-sm btn-warning mr-1' %>
+                    <%= link_to icon('fas fa-trash'), user, title: 'Destroy it', class: 'btn btn-icon btn-sm btn-danger', method: :delete, data: { confirm: 'Are you sure?', remote: true } %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+          <%= link_to 'Next page', users_path(page: @page.next_number, q: request.params[:q]), data: { target: 'infinite-page.more' } unless @page.last? %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-<div id="users">
-  <% @users.each do |user| %>
-    <%= render user %>
-    <p>
-      <%= link_to "Show this user", user %>
-    </p>
-  <% end %>
-</div>
-
-<%= link_to "New user", new_user_path %>
+<% content_for(:page_title, 'List of Users') %>

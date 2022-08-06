@@ -1,6 +1,17 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
+  config.force_ssl = true
+  config.active_job.queue_adapter = :sidekiq
+  config.action_controller.asset_host = ENV['CLOUDFRONT_URL']
+  config.cache_store = :redis_cache_store, { url: ENV['REDIS_CACHE_URL'] }
+
+  config.middleware.use(
+    Rack::Ratelimit, name: 'API',
+    conditions: ->(env) { ActionDispatch::Request.new(env.dup).format.json? },
+    rate:   [50, 10.seconds],
+    redis:  Redis.new
+  ) { |env| ActionDispatch::Request.new(env).ip }
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
@@ -60,7 +71,7 @@ Rails.application.configure do
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
   # config.active_job.queue_adapter     = :resque
-  # config.active_job.queue_name_prefix = "negotiate_equipment_production"
+  # config.active_job.queue_name_prefix = "good_equipment_production"
 
   config.action_mailer.perform_caching = false
 

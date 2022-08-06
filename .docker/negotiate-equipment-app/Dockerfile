@@ -11,7 +11,7 @@ RUN apt install -y postgresql-client nodejs yarn
 # Prepare working directory.
 WORKDIR /negotiate-equipment-app
 COPY ./negotiate-equipment-app /negotiate-equipment-app
-RUN gem install bundler
+RUN gem install bundler -v 2.3.10
 RUN bundle install
 
 # Configure endpoint.
@@ -22,3 +22,4 @@ EXPOSE 3000
 
 # Start app server.
 CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
+# CMD ["bundle", "exec", "bin/dev"]

@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.7.2",
+    "bootstrap": "^4.2.1",
+    "cleave.js": "^1.4.7",
+    "esbuild": "^0.14.53",
+    "izitoast": "^1.4.0",
+    "jquery": "^3.6.0",
+    "jquery.nicescroll": "^3.7.6",
+    "popper.js": "^1.16.1",
+    "select2": "^4.0.7-rc.0",
+    "waypoints": "^4.0.1"
+  },
+  "scripts": { 
+    "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=assets" 
+  }
+}

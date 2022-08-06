@@ -1,9 +1,24 @@
-<h1>New user</h1>
+<section class="section">
+  <div class="section-header d-mobile-none">
+    <h1>Users</h1>
+    <div class="section-header-breadcrumb">
+      <div class="breadcrumb-item"><%= link_to 'Dashboard', root_path %></div>
+      <div class="breadcrumb-item"><%= link_to 'Users', users_path %></div>
+      <div class="breadcrumb-item">New User</div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div class="card">
+      <div class="card-header">
+        <h4>New User</h4>
+      </div>
+      <div class="card-body">
+        <%= render 'form', user: @user %>
+      </div>
+    </div>
+  </div>
+</section>
 
-<%= render "form", user: @user %>
+<%= link_to icon('fas fa-arrow-left', 'Back'), users_path, class: 'btn btn-icon icon-left btn-secondary d-mobile-none' %>
 
-<br>
-
-<div>
-  <%= link_to "Back to users", users_path %>
-</div>
+<% content_for(:page_title, 'New User') %>

@@ -39,6 +39,7 @@
                 <th><%= sort_link_turbo(@search, :email) %></th>
                 <th><%= sort_link_turbo(@search, :birthdate) %></th>
                 <th><%= sort_link_turbo(@search, :country) %></th>
+                <th>On Vacations</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -50,6 +51,7 @@
                   <td><%= user.email %></td>
                   <td><%= user.birthdate.strftime("%d/%m/%Y") %></td>
                   <td><%= user.country %></td>
+                  <td><%= user.is_blocked ? "YES" : "NO" %></td>
                   <td>
                     <%= link_to icon('fas fa-eye'), user, title: 'Show it', class: 'btn btn-icon btn-sm btn-info mr-1' %>
                     <%= link_to icon('fas fa-edit'), edit_user_path(user), title: 'Edit it', class: 'btn btn-icon btn-sm btn-warning mr-1' %>

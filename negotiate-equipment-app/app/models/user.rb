@@ -2,6 +2,7 @@ class User < ApplicationRecord
     after_create :insert_products
 
     has_many :products
+    has_one :vacation
 
     def insert_products
         products = [
@@ -15,6 +16,12 @@ class User < ApplicationRecord
         products.each do |product|
             self.products.create(name: product[:name], price: product[:price])
         end
+    end
+
+    def is_blocked
+        return false unless self.vacation
+
+        Date.today.between?(self.vacation.start_date, self.vacation.end_date) ? true : false
     end
 
     def to_s

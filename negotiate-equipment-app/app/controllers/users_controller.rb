@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   before_action :set_user, only: %i[ show edit update destroy ]
+  before_action :set_user_and_chosen_user, :set_users_products, only: %i[ choose_equipment change_equipment ]
 
   def index
     @search = User.reverse_chronologically.ransack(params[:q])
@@ -11,6 +12,8 @@ class UsersController < ApplicationController
   end
 
   def show
+    @users = User.where.not(id: @user.id)
+    
     @search = Product.reverse_chronologically.ransack(params[:q])
 
     fresh_when etag: @user
@@ -21,6 +24,23 @@ class UsersController < ApplicationController
   end
 
   def edit
+  end
+
+  def choose_equipment
+    @search = Product.reverse_chronologically.ransack(params[:q])
+    fresh_when etag: @user
+  end
+
+  def change_equipment
+    return redirect_to user_choose_equipment_path(@user, chosen_user: @chosen_user),
+      flash: { 
+        error: "The sum of the equipments values must be equal!" 
+      } unless check_equipment_price
+
+    @user_equipment.update(user: @chosen_user)
+    @chosen_user_equipment.update(user: @user)
+
+    redirect_to user_choose_equipment_path(@user, chosen_user: @chosen_user), notice: 'Equipments successfully changed.'
   end
 
   def create
@@ -52,6 +72,20 @@ class UsersController < ApplicationController
   private
     def set_user
       @user = User.find(params[:id])
+    end
+
+    def set_user_and_chosen_user
+      @user = User.find(params[:user_id])
+      @chosen_user = User.find(params[:chosen_user])
+    end
+
+    def set_users_products
+      @user_equipment = Product.where(id: params[:user_equipment].keys) if params[:user_equipment].present?
+      @chosen_user_equipment = Product.where(id: params[:chosen_user_equipment].keys) if params[:chosen_user_equipment].present?
+    end
+
+    def check_equipment_price
+      @user_equipment.sum(:price) == @chosen_user_equipment.sum(:price)
     end
 
     def user_params

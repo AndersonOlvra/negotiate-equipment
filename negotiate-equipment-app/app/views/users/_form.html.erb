@@ -1,20 +1,22 @@
 <%= form_with(model: user, data: { controller: 'validation' }) do |form| %>
-  <div class="form-group">
-    <%= form.label :name %>
-    <%= form.text_field :name, class: 'form-control' %>
-  </div>
-  <div class="form-group">
-    <%= form.label :nickname %>
-    <%= form.text_field :nickname, class: 'form-control' %>
-  </div>
-  <div class="form-group">
-    <%= form.label :email %>
-    <%= form.text_field :email, class: 'form-control' %>
-  </div>
-  <div class="form-group">
-    <%= form.label :birthdate %>
-    <%= form.text_field :birthdate, value: user.birthdate, placeholder: "yyyy-mm-dd", class: 'form-control', data: { controller: 'date' } %>
-  </div>
+  <% if !user.persisted? %>
+    <div class="form-group">
+      <%= form.label :name %>
+      <%= form.text_field :name, class: 'form-control' %>
+    </div>
+    <div class="form-group">
+      <%= form.label :nickname %>
+      <%= form.text_field :nickname, class: 'form-control' %>
+    </div>
+    <div class="form-group">
+      <%= form.label :email %>
+      <%= form.text_field :email, class: 'form-control' %>
+    </div>
+    <div class="form-group">
+      <%= form.label :birthdate %>
+      <%= form.text_field :birthdate, value: user.birthdate, placeholder: "yyyy-mm-dd", class: 'form-control', data: { controller: 'date' } %>
+    </div>
+  <% end %>
   <div class="form-group">
     <%= form.label :country %>
     <%= form.text_field :country, class: 'form-control' %>
